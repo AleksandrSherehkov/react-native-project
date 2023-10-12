@@ -1,15 +1,21 @@
-import { StatusBar } from "expo-status-bar";
-import { ImageBackground, StyleSheet, View } from "react-native";
-import { useFonts } from "expo-font";
-import BgImg from "./assets/images/background.jpg";
-import { RegisterScreen } from "./Screens/RegisterScreen";
-import { LoginScreen } from "./Screens/LoginScreen";
+import { StatusBar } from 'expo-status-bar';
+import {
+  ImageBackground,
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import { useFonts } from 'expo-font';
+import BgImg from './assets/images/background.jpg';
+import { RegisterScreen } from './Screens/RegisterScreen';
+import { LoginScreen } from './Screens/LoginScreen';
 
 export default function App() {
   const [fontsLoaded, error] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+    'Roboto-Regular': require('./assets/fonts/Roboto-Regular.ttf'),
+    'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
+    'Roboto-Bold': require('./assets/fonts/Roboto-Bold.ttf'),
   });
 
   if (!fontsLoaded && !error) {
@@ -17,13 +23,15 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <ImageBackground source={BgImg} style={styles.bgImage}>
-        <RegisterScreen />
-        {/* <LoginScreen /> */}
-      </ImageBackground>
-      <StatusBar style="auto" />
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <ImageBackground source={BgImg} style={styles.bgImage}>
+          <RegisterScreen />
+          {/* <LoginScreen /> */}
+        </ImageBackground>
+        <StatusBar style="auto" />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -33,7 +41,7 @@ const styles = StyleSheet.create({
   },
   bgImage: {
     flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
+    resizeMode: 'cover',
+    justifyContent: 'flex-end',
   },
 });

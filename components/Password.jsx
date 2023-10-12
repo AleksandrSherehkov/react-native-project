@@ -1,13 +1,15 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Input } from "./Input";
-import { Color, FontFamily, FontSize } from "../styles/globalStyles";
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Input } from './Input';
+import { Color, FontFamily, FontSize } from '../styles/globalStyles';
+import { useState } from 'react';
 
 export const Password = () => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   return (
     <View style={styles.passwordContainer}>
-      <Input placeholder="Пароль" secured={true} />
-      <Pressable style={styles.showBtn}>
-        <Text style={styles.showBtnTitle}>Показати</Text>
+      <Input placeholder="Пароль" secured={!isPasswordVisible} />
+      <Pressable style={styles.showBtn} onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+        <Text style={styles.showBtnTitle}>{isPasswordVisible ? 'Сховати' : 'Показати'}</Text>
       </Pressable>
     </View>
   );
@@ -15,10 +17,10 @@ export const Password = () => {
 
 const styles = StyleSheet.create({
   passwordContainer: {
-    position: "relative",
+    position: 'relative',
   },
   showBtn: {
-    position: "absolute",
+    position: 'absolute',
     top: 16,
     right: 16,
   },

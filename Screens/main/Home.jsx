@@ -17,6 +17,7 @@ export const Home = () => {
 
   return (
     <MainTabs.Navigator
+      id="home"
       initialRouteName="Posts"
       screenOptions={{
         tabBarShowLabel: false,
@@ -38,6 +39,9 @@ export const Home = () => {
         name="Posts"
         component={PostsScreen}
         options={{
+          tabBarStyle: {
+            display: "flex",
+          },
           headerShown: false,
           tabBarIcon: () => (
             <AntDesign name="appstore-o" size={24} color={Color.fogGray} />

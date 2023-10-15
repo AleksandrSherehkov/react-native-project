@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -7,7 +7,8 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import { Camera } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -15,52 +16,90 @@ import { Border, Color, FontFamily, FontSize } from "../../styles/globalStyles";
 
 export const CreatePostsScreen = () => {
   const [camera, setCamera] = useState(null);
-  const [photo, setPhoto] = useState(null);
+  const [photoUri, setPhotoUri] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [type, setType] = useState(CameraType.back);
+  const [hasPermission, setHasPermission] = useState(null);
+
   const navigation = useNavigation();
 
-  const isNotDisabled = photo && title && location;
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  const isNotDisabled = photoUri && title && location;
 
   const takePicture = async () => {
+    if (photoUri) {
+      setPhotoUri(null);
+      return;
+    }
     const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
-    console.log(photo);
+    setPhotoUri(photo.uri);
+    console.log(photo.uri);
   };
 
   const handleDelete = () => {
-    setPhoto(null);
+    setPhotoUri(null);
     setTitle("");
     setLocation("");
     navigation.navigate("PostsDefault");
   };
 
+  const handleToggleCamera = () => {
+    setType((prev) =>
+      prev === CameraType.back ? CameraType.front : CameraType.back
+    );
+  };
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        {photo ? (
-          <Image source={{ uri: photo.uri }} />
+        {photoUri ? (
+          <Image source={{ uri: photoUri }} style={styles.image} />
         ) : (
           <Camera style={styles.camera} ref={setCamera}></Camera>
         )}
         <TouchableOpacity
           style={{
             ...styles.btnContainer,
-            backgroundColor: photo ? Color.transparentWhite : Color.white,
+            backgroundColor: photoUri ? Color.transparentWhite : Color.white,
           }}
           activeOpacity={0.5}
           onPress={takePicture}
         >
-          <MaterialCommunityIcons
-            name="camera"
-            size={24}
-            color={photo ? Color.white : Color.darkGray}
-          />
+          {photoUri ? (
+            <MaterialCommunityIcons
+              name="camera-retake"
+              size={24}
+              color={Color.white}
+            />
+          ) : (
+            <MaterialCommunityIcons
+              name="camera"
+              size={24}
+              color={Color.darkGray}
+            />
+          )}
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.downloadBtn} activeOpacity={0.5}>
         <Text style={styles.downloadText}>
-          {photo ? "Редагувати фото" : "Завантажте фото"}
+          {photoUri ? "Редагувати фото" : "Завантажте фото"}
         </Text>
       </TouchableOpacity>
       <View style={styles.inputsWrapper}>
@@ -137,7 +176,7 @@ const styles = StyleSheet.create({
     borderRadius: Border.xs,
     overflow: "hidden",
     marginBottom: 8,
-    backgroundColor: Color.lightGray,
+    // backgroundColor: Color.lightGray,
   },
   camera: {
     height: 240,
@@ -154,7 +193,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 50,
-    backgroundColor: Color.white,
+  },
+  image: {
+    height: 240,
   },
   downloadBtn: {
     marginBottom: 32,

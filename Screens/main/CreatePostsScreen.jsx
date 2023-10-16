@@ -1,25 +1,18 @@
-import { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  TextInput,
-} from "react-native";
-import { Camera, CameraType } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
-import * as Location from "expo-location";
-import { useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { Border, Color, FontFamily, FontSize } from "../../styles/globalStyles";
+import { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
+import { Camera, CameraType } from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
+import * as Location from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { Border, Color, FontFamily, FontSize } from '../../styles/globalStyles';
 
 export const CreatePostsScreen = () => {
   const [camera, setCamera] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
-  const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
+  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState('');
   const [locationCoords, setLocationCoords] = useState(null);
   const [type, setType] = useState(CameraType.back);
   const [hasPermission, setHasPermission] = useState(null);
@@ -30,20 +23,20 @@ export const CreatePostsScreen = () => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
+      const location = await Location.requestForegroundPermissionsAsync();
 
-      setHasPermission(status === "granted");
+      // if (status !== "granted") {
+      //   console.log("Permission to access location was denied");
+      //   return;
+      // }
+
+      setHasPermission(status === 'granted');
     })();
   }, []);
 
   useEffect(() => {
     if (photoUri) {
       (async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          console.log("Permission to access location was denied");
-          return;
-        }
-
         const location = await Location.getCurrentPositionAsync({});
         const coords = {
           latitude: location.coords.latitude,
@@ -72,6 +65,12 @@ export const CreatePostsScreen = () => {
     setPhotoUri(photo.uri);
   };
 
+  const handleReset = () => {
+    setPhotoUri(null);
+    setTitle('');
+    setLocation('');
+  };
+
   const handlePost = () => {
     const data = {
       photoUri,
@@ -79,20 +78,17 @@ export const CreatePostsScreen = () => {
       location,
       locationCoords,
     };
-    navigation.navigate("PostsDefault", data);
+    navigation.navigate('PostsDefault', data);
+    handleReset();
   };
 
   const handleDelete = () => {
-    setPhotoUri(null);
-    setTitle("");
-    setLocation("");
-    navigation.navigate("PostsDefault");
+    handleReset();
+    navigation.navigate('PostsDefault');
   };
 
   const handleToggleCamera = () => {
-    setType((prev) =>
-      prev === CameraType.back ? CameraType.front : CameraType.back
-    );
+    setType(prev => (prev === CameraType.back ? CameraType.front : CameraType.back));
   };
 
   if (hasPermission === null) {
@@ -120,24 +116,14 @@ export const CreatePostsScreen = () => {
           onPress={takePicture}
         >
           {photoUri ? (
-            <MaterialCommunityIcons
-              name="camera-retake"
-              size={24}
-              color={Color.white}
-            />
+            <MaterialCommunityIcons name="camera-retake" size={24} color={Color.white} />
           ) : (
-            <MaterialCommunityIcons
-              name="camera"
-              size={24}
-              color={Color.darkGray}
-            />
+            <MaterialCommunityIcons name="camera" size={24} color={Color.darkGray} />
           )}
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.downloadBtn} activeOpacity={0.5}>
-        <Text style={styles.downloadText}>
-          {photoUri ? "Редагувати фото" : "Завантажте фото"}
-        </Text>
+        <Text style={styles.downloadText}>{photoUri ? 'Редагувати фото' : 'Завантажте фото'}</Text>
       </TouchableOpacity>
       <View style={styles.inputsWrapper}>
         <View style={styles.inputContainer}>
@@ -152,9 +138,9 @@ export const CreatePostsScreen = () => {
         <View
           style={{
             ...styles.inputContainer,
-            flexDirection: "row",
+            flexDirection: 'row',
             gap: 4,
-            alignItems: "center",
+            alignItems: 'center',
           }}
         >
           <Feather name="map-pin" size={24} color={Color.darkGray} />
@@ -186,11 +172,7 @@ export const CreatePostsScreen = () => {
             Опубліковати
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.trashBtn}
-          activeOpacity={0.5}
-          onPress={handleDelete}
-        >
+        <TouchableOpacity style={styles.trashBtn} activeOpacity={0.5} onPress={handleDelete}>
           <Feather name="trash-2" size={24} color={Color.darkGray} />
         </TouchableOpacity>
       </View>
@@ -207,29 +189,29 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
   },
   cameraContainer: {
-    position: "relative",
+    position: 'relative',
     height: 240,
     borderWidth: 1,
     borderColor: Color.gray,
     borderRadius: Border.xs,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginBottom: 8,
     // backgroundColor: Color.lightGray,
   },
   camera: {
     height: 240,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnContainer: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -30 }, { translateY: -30 }],
     width: 60,
     height: 60,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 50,
   },
   image: {
@@ -260,11 +242,11 @@ const styles = StyleSheet.create({
   },
   bottomWrapper: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   postBtn: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingTop: 16,
     paddingBottom: 16,
     paddingHorizontal: 32,
@@ -275,9 +257,9 @@ const styles = StyleSheet.create({
     fontSize: FontSize.m,
   },
   trashBtn: {
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 70,
     height: 40,
     borderRadius: 20,

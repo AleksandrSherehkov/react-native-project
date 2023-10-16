@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import { useRoute } from "@react-navigation/native";
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { useRoute } from '@react-navigation/native';
 
 export const MapScreen = () => {
   const [location, setLocation] = useState(null);
@@ -19,8 +19,8 @@ export const MapScreen = () => {
         style={styles.map}
         region={{
           ...location,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.002,
         }}
       >
         <Marker title="Post location" coordinate={location} />
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
 });

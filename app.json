@@ -23,14 +23,14 @@
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.anna_voronina.reactnativeproject"
+      "package": "com.alexandr_shereshkov.reactnativeproject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "fae6f05b-0d5c-4178-9495-513061d503a4"
+        "projectId": "2a6f9433-358a-409c-aa3a-708ba84cd721"
       }
     }
   }
